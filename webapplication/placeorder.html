@@ -1,0 +1,48 @@
+<html>
+        <head lang="en">
+                <meta charset="utf-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                <title>Welcome to </title>
+                <link href="/css/bootstrap.min.css" rel="stylesheet">
+                <link href="/css/style.css" rel="stylesheet">  
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/angularjs/angularapp1.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+        </head>
+        <script>
+           $(function(){
+             var socket = io();
+             $('#formdata').submit(function(){
+                var option = $('#select').val();
+                option = option.split(':')[1];
+                var num= $('#num').val();
+                
+                if(option !=undefined && num != undefined >0 && num > 0)
+                 {
+                //  console.log(option.length)
+                var data = {dishname:option,amount:num}
+                socket.emit('orderval',data);
+                alert("Your order in Queue. please wait a moment.")
+                 }
+             })
+           })
+        </script>
+        <body ng-app="myApp">
+          <div class="panel panel-default" style="margin:40px">
+          <div class="panel-heading"><p> Place your Orders </p></div>
+          <form id="formdata" class="panel-body" ng-controller="myCtrl">
+            <div class="container-fluid form">
+              <div class="container"><div class="col-sm-6 col-lg-5 col-md-5">Select Dish name:</div></div>
+              <div class="container"><div class="col-sm-6 col-lg-5 col-md-5"><select class=" form-control" id="select" ng-model="selectedName" ng-options="item for item in names"></select></div></div>
+              <div class="container"><div class="col-sm-6 col-lg-5 col-md-5">Select quantity:</div></div>
+              <div class="container">  <div class="col-sm-6 col-lg-5 col-md-5"><input  class="form-control" id="num" type="number" ng-model="quantity" placeholder="Select quantity"></div></div>
+            </br><div class="conatiner"><div class="col-sm-6 col-lg-5 col-md-5"> <input type="submit" id="place" class="btn btn-success pull-right" ng-click="placeorder()" value="Done" /></div>
+            </div>
+          </form>
+          </div>
+          <script src="/js/bootstrap.min.js"></script>
+        </body>
+        </html>

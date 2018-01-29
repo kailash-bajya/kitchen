@@ -1,0 +1,78 @@
+<html>
+<head lang="en">
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Welcome to </title>
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/style.css" rel="stylesheet">  
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/angularjs/angularapp.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+</head>
+<script>
+  $(function () {var socket = io();
+    socket.on('send message',function(pack){
+      console.log(pack)
+       var id1 =document.getElementById(pack.dishname);
+       id1.querySelector('#quantity').innerHTML=pack.nextval;
+       id1.querySelector('#prepaired').innerHTML = pack.prepaired;
+      });
+      socket.on('predictedValues',function(values){
+        var id = document.getElementById(values.dishname);      
+        id.querySelector('#predicted').innerHTML = values.amount;
+      })
+      socket.on('orderValues',function(values){
+        var id = document.getElementById(values.dishname);
+        id.querySelector('#quantity').innerHTML = values.amount;
+      })
+    $('#submit').click(function(e){
+     var lp1 = e.target.attributes[1];
+   if(lp1 != 'class="ng-binding"' && lp1 != undefined)
+       { 
+         var lp = e.target.attributes[1].value;
+         var id= document.getElementById(lp);      
+         var preval = id.querySelector('#prepaired').innerHTML;
+         var curval = id.querySelector('#quantity').innerHTML;
+         var newval = parseInt(preval) + parseInt(curval);
+         id.querySelector('#prepaired').innerHTML = newval;
+         lp = {"dishname":lp,"prepaired":newval}
+         socket.emit('receive message',lp);
+        }       
+  });
+  
+});
+</script>
+<body ng-app="myApp" ng-controller="myCtrl">
+  <div class="panel panel-default" style="margin:40px">
+  <div class="panel-heading"><p> Kitchen Orders Display</p></div>
+  <table class="table">
+    <thead>
+     <tr> <th>Name</th>
+      <th>Quantity</th>
+      <th>Prepaired</th>
+      <th>Predicted</th>
+      </tr>
+    </thead>
+     <tbody id="submit">
+       <tr ng-repeat="item in names" id="{{item}}"> 
+        <td id="name">{{item}}</td>
+        <td id="quantity">0</td>
+        <td id="prepaired">0</td>
+        <td id="predicted">0</td>
+        <td><button class="btn btn-success" val="{{item}}" id="submit1">Done</button></td>
+        </tr>
+        </tbody>
+  </table>
+ <!-- <form id="formdata" class="panel-body">
+    <div class="container-fluid">
+       <div class="col-md-3 col-lg-3" id="name">45</div>
+      <div class="col-md-2 col-lg-2"> <input type="submit" class="btn btn-success" value="Done" />
+    </div>
+  </form>-->
+  </div>
+  <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>
